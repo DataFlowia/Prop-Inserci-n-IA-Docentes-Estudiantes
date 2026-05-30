@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard IA - Propuesta Institucional</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- VARIABLES Y CONFIGURACIÓN BASE --- */
+        :root {
+            --bg-main: #060b14;
+            --bg-card: #0d1525;
+            --bg-card-hover: #121d32;
+            --accent-cyan: #00e5ff;
+            --accent-cyan-dim: rgba(0, 229, 255, 0.12);
+            --accent-purple: #4facfe;
+            --text-main: #eef2f8;
+            --text-muted: #7a8fa8;
+            --border-subtle: rgba(255,255,255,0.06);
+            --border-glow: linear-gradient(135deg, #4facfe 0%, #00e5ff 100%);
+            --glow-cyan: 0 0 30px rgba(0,229,255,0.18);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* Subtle grid texture */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0,229,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,229,255,0.025) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Radial glow top */
+        body::after {
+            content: '';
+            position: fixed;
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 900px;
+            height: 500px;
+            background: radial-gradient(ellipse at center, rgba(0,229,255,0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px 0;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+
+        /* --- TOPBAR CON LOGO --- */
+        .topbar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 0 24px 0;
+            width: 100%;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .brand-logo .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #00c4d4, #00e5ff);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 16px rgba(0,229,255,0.4);
+        }
+
+        .brand-logo .logo-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: #060b14;
+        }
+
+        .brand-logo .logo-text {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.15rem;
+            letter-spacing: 0.06em;
+            color: #00e5ff;
+            text-shadow: 0 0 20px rgba(0,229,255,0.5);
+            line-height: 1;
+        }
+
+        .brand-logo .logo-text span {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* --- HEADER --- */
+        header {
+            text-align: center;
+            margin-bottom: 44px;
+            padding: 32px 20px 36px;
+            position: relative;
+            width: 100%;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent-cyan-dim);
+            border: 1px solid rgba(0,229,255,0.25);
+            border-radius: 100px;
+            padding: 6px 16px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--accent-cyan);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .header-badge i { font-size: 0.7rem; }
+
+        header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 30%, #00e5ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+        }
+
+        /* --- GRID --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+        }
+
+        .full-width { grid-column: span 2; }
+
+        /* --- CARDS --- */
+        .card-wrapper {
+            position: relative;
+            border-radius: 16px;
+            padding: 1px;
+            background: var(--border-subtle);
+            transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.35s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .card-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            padding: 1px;
+            background: var(--border-glow);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        /* Glow spot on hover */
+        .card-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0,229,255,0.06), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .card-wrapper:hover {
+            transform: translateY(-4px) rotateX(1.5deg) rotateY(1.5deg);
+            box-shadow: 0 20px 50px rgba(0, 229, 255, 0.1), 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .card-wrapper:hover::before,
+        .card-wrapper:hover::after { opacity: 1; }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 26px;
+            height: 100%;
+        }
+
+        /* --- COLAPSABLE --- */
+        .collapsible-trigger {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            gap: 12px;
+        }
+
+        .collapsible-trigger h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 0.01em;
+        }
+
+        .collapsible-trigger h2 .icon-wrap {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--accent-cyan-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .collapsible-trigger h2 i {
+            color: var(--accent-cyan);
+            font-size: 0.9rem;
+        }
+
+        .chevron-wrap {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .chevron-icon {
+            transition: transform 0.3s ease;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.45s ease-out, opacity 0.35s ease;
+            opacity: 0;
+            padding-top: 0;
+        }
+
+        .card-wrapper.active .collapsible-content {
+            max-height: 2000px;
+            opacity: 1;
+            padding-top: 22px;
+        }
+
+        .card-wrapper.active .chevron-icon { transform: rotate(180deg); color: var(--accent-cyan); }
+        .card-wrapper.active .chevron-wrap { background: var(--accent-cyan-dim); border-color: rgba(0,229,255,0.3); }
+
+        /* Separador entre trigger y contenido */
+        .card-wrapper.active .collapsible-trigger {
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        /* --- TEXTO INTERNO --- */
+        p {
+            line-height: 1.75;
+            margin-bottom: 14px;
+            color: #a0b0c8;
+            font-size: 0.92rem;
+        }
+
+        strong { color: #e0eaf6; font-weight: 500; }
+
+        .meta-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .meta-item {
+            background: rgba(255,255,255,0.025);
+            padding: 14px 16px;
+            border-radius: 10px;
+            border-left: 2px solid var(--accent-purple);
+            font-size: 0.88rem;
+            color: #a0b0c8;
+            line-height: 1.6;
+        }
+
+        .meta-item span {
+            display: block;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+
+        .subsection {
+            margin-top: 18px;
+            background: rgba(0,229,255,0.03);
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 2px solid var(--accent-cyan);
+        }
+
+        .subsection h4 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        ul { padding-left: 18px; margin-bottom: 10px; }
+
+        ul li {
+            margin-bottom: 8px;
+            color: #a0b0c8;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        ul li::marker { color: var(--accent-cyan); }
+
+        /* --- TABLA --- */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; }
+
+        thead tr { background: rgba(0,229,255,0.05); }
+
+        th {
+            color: var(--accent-cyan);
+            padding: 13px 16px;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.82rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 13px 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            color: #a0b0c8;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background-color: rgba(255,255,255,0.018); }
+
+        /* Semana badge */
+        td:first-child strong {
+            display: inline-block;
+            background: var(--accent-cyan-dim);
+            color: var(--accent-cyan);
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            width: 100%;
+            margin-top: 60px;
+            padding: 28px 24px;
+            border-top: 1px solid var(--border-subtle);
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-links a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: opacity 0.2s;
+        }
+
+        .footer-links a:hover { opacity: 0.75; }
+        .footer-links a i { font-size: 0.8rem; }
+
+        .footer-divider {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            opacity: 0.4;
+        }
+
+        .footer-links .email-link {
+            color: var(--text-muted);
+        }
+
+        .footer-links .email-link:hover { color: var(--accent-cyan); opacity: 1; }
+
+        .footer-copy {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            letter-spacing: 0.03em;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 20px 14px 0; }
+            header h1 { font-size: 1.75rem; }
+            .card { padding: 18px; }
+            table { font-size: 0.8rem; }
+            th, td { padding: 10px 12px; }
+            .footer-links { gap: 16px; }
+        }
+
+        /* Entrada animada */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-wrapper {
+            animation: fadeUp 0.5s ease both;
+        }
+
+        .card-wrapper:nth-child(1) { animation-delay: 0.05s; }
+        .card-wrapper:nth-child(2) { animation-delay: 0.12s; }
+        .card-wrapper:nth-child(3) { animation-delay: 0.19s; }
+        .card-wrapper:nth-child(4) { animation-delay: 0.26s; }
+        .card-wrapper:nth-child(5) { animation-delay: 0.33s; }
+        .card-wrapper:nth-child(6) { animation-delay: 0.40s; }
+        .card-wrapper:nth-child(7) { animation-delay: 0.47s; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- TOPBAR CON LOGO DATAFLOW IA -->
+        <div class="topbar">
+            <a href="https://www.dataflowia.com" target="_blank" class="brand-logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 6h4v12H4zM10 3h4v18h-4zM16 8h4v10h-4z"/>
+                    </svg>
+                </div>
+                <div class="logo-text">DATAFLOW <span>IA</span></div>
+            </a>
+        </div>
+
+        <!-- HEADER -->
+        <header>
+            <div class="header-badge">
+                <i class="fa-solid fa-microchip"></i>
+                Presentación Ejecutiva
+            </div>
+            <h1>Propuesta de Inserción de<br>Inteligencia Artificial</h1>
+            <p>Establecimiento Educacional &nbsp;·&nbsp; Mayo 2026</p>
+        </header>
+
+        <!-- GRID DE CARDS -->
+        <div class="dashboard-grid">
+
+            <div class="card-wrapper full-width active" id="card-portada">
+                <div class="card">
+                    <div class="collapsible-trigger" onclick="toggleCard('card-portada')">
+                        <h2>
+                            <div class="icon-wrap"><i class="fa-solid fa-graduation-cap"></i></div>
+                            Portada y Datos del Proyecto
+                        </h2>
+                        <div class="chevron-wrap"><i class="fa-solid fa-chevron-down chevron-icon"></i></div>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Título:</strong> Inserción estratégica de Inteligencia Artificial en el colegio</p>
+                        <p><strong>Subtítulo:</strong> Modelo de implementación pedagógica para docentes y estudiantes</p>
+                        <div class="meta-list">
+                            <div class="meta-item"><span>Tipo de Documento</span>Propuesta formal tipo informe</div>
+                            <div class="meta-item"><span>Fecha</span>Mayo de 2026</div>
+                            <div class="meta-item"><span>Preparado Para</span>Equipo directivo y sostenedor</div>
+                            <div class="meta-item"><span>Preparado Por</span>Consultoría en innovación educativa</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-wrapper" id="card-intro">
+                <div class="card">
+                    <div class="collapsible-trigger" onclick="toggleCard('card-intro')">
+                        <h2>
+                            <div class="icon-wrap"><i class="fa-solid fa-book-open"></i></div>
+                            Introducción
+                        </h2>
+                        <div class="chevron-wrap"><i class="fa-solid fa-chevron-down chevron-icon"></i></div>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>La incorporación de IA dejó de ser una tendencia emergente y se transformó en un desafío estratégico escolar, afectando la enseñanza, el currículum y la organización.</p>
+                        <p>Según directrices de la <strong>UNESCO</strong> y la <strong>OECD</strong>, la adopción tecnológica debe centrarse en el ser humano, resguardando la calidad pedagógica y el diseño de estrategias claras antes de la adquisición de herramientas informáticas.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-wrapper" id="card-objetivos">
+                <div class="card">
+                    <div class="collapsible-trigger" onclick="toggleCard('card-objetivos')">
+                        <h2>
+                            <div class="icon-wrap"><i class="fa-solid fa-bullseye"></i></div>
+                            Objetivos y Alcance
+                        </h2>
+                        <div class="chevron-wrap"><i class="fa-solid fa-chevron-down chevron-icon"></i></div>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Objetivo General:</strong> Diseñar e implementar una estrategia inicial de IA orientada a fortalecer la práctica docente, mejorar aprendizajes y establecer marcos de uso seguro y ético.</p>
+                        <p><strong>Alcance:</strong> Centrado en una primera fase transversal de formación, diseño de protocolos y pilotaje pedagógico en aula. Excluye desarrollo de software propio o analítica institucional compleja.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-wrapper" id="card-mod1">
+                <div class="card">
+                    <div class="collapsible-trigger" onclick="toggleCard('card-mod1')">
+                        <h2>
+                            <div class="icon-wrap"><i class="fa-solid fa-chalkboard-user"></i></div>
+                            Módulo 1: Profesores
+                        </h2>
+                        <div class="chevron-wrap"><i class="fa-solid fa-chevron-down chevron-icon"></i></div>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>Foco en la IA como apoyo profesional para planificar, adaptar materiales y optimizar tareas repetitivas bajo un modelo de competencias sugerido por la UNESCO.</p>
+                        <div class="subsection">
+                            <h4>Contenidos Sugeridos</h4>
+                            <ul>
+                                <li>Fundamentos de IA generativa escolar.</li>
+                                <li>Diseño de prompts para planificación, rúbricas y feedback.</li>
+                                <li>Diferenciación y adecuación pedagógica.</li>
+                                <li>Validación crítica, sesgos y propiedad intelectual.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-wrapper" id="card-mod2">
+                <div class="card">
+                    <div class="collapsible-trigger" onclick="toggleCard('card-mod2')">
+                        <h2>
+                            <div class="icon-wrap"><i class="fa-solid fa-user-graduate"></i></div>
+                            Módulo 2: Alumnos
+                        </h2>
+                        <div class="chevron-wrap"><i class="fa-solid fa-chevron-down chevron-icon"></i></div>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>Foco en la introducción del uso formativo de herramientas inteligentes para estudiar, organizar ideas y procesar información, previniendo la sustitución cognitiva pasiva.</p>
+                        <div class="subsection">
+                            <h4>Contenidos Sugeridos</h4>
+                            <ul>
+                                <li>Límites y funcionamiento básico de la IA.</li>
+                                <li>Formulación de preguntas eficaces para estudiar.</li>
+                                <li>Contraste con fuentes de información confiables.</li>
+                                <li>Honestidad académica y resguardo de datos personales.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-wrapper full-width" id="card-plan">
+                <div class="card">
+                    <div class="collapsible-trigger" onclick="toggleCard('card-plan')">
+                        <h2>
+                            <div class="icon-wrap"><i class="fa-solid fa-layer-group"></i></div>
+                            Plan de Implementación Estratégica
+                        </h2>
+                        <div class="chevron-wrap"><i class="fa-solid fa-chevron-down chevron-icon"></i></div>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>El plan se estructura en fases secuenciales que aseguran una transición ordenada, evaluable y adaptada a la cultura del establecimiento escolar.</p>
+                        <div class="meta-list">
+                            <div class="meta-item"><strong>Fase 1: Diagnóstico</strong><br>Encuestas a docentes, entrevistas directivas y revisión de infraestructura tecnológica.</div>
+                            <div class="meta-item"><strong>Fase 2: Lineamientos</strong><br>Creación de protocolos de uso responsable y matriz de herramientas recomendadas.</div>
+                            <div class="meta-item"><strong>Fase 3: Capacitación</strong><br>Talleres dirigidos a docentes y alumnos de niveles piloto de control.</div>
+                            <div class="meta-item"><strong>Fase 4: Evaluación</strong><br>Análisis de métricas e indicadores para proponer planes de escalamiento.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-wrapper full-width" id="card-cronograma">
+                <div class="card">
+                    <div class="collapsible-trigger" onclick="toggleCard('card-cronograma')">
+                        <h2>
+                            <div class="icon-wrap"><i class="fa-solid fa-calendar-days"></i></div>
+                            Cronograma Referencial (12 Semanas)
+                        </h2>
+                        <div class="chevron-wrap"><i class="fa-solid fa-chevron-down chevron-icon"></i></div>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>Propuesta de ejecución modular de bajo riesgo adaptada a los tiempos internos del calendario académico regular.</p>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Semanas</th>
+                                        <th>Hito Principal</th>
+                                        <th>Actividades Clave</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>1 - 2</strong></td>
+                                        <td>Diagnóstico</td>
+                                        <td>Reuniones con directivos, encuesta docente, revisión de conectividad.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>3 - 4</strong></td>
+                                        <td>Diseño Institucional</td>
+                                        <td>Protocolo de uso, selección de software, planificación formativa.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>5 - 6</strong></td>
+                                        <td>Formación Docente</td>
+                                        <td>Talleres técnico-pedagógicos, diseño de experiencias didácticas.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>7 - 8</strong></td>
+                                        <td>Formación Estudiantil</td>
+                                        <td>Talleres introductorios de alfabetización crítica en IA.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>9 - 11</strong></td>
+                                        <td>Pilotaje Activo</td>
+                                        <td>Aplicación en asignaturas seleccionadas, acompañamiento técnico.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>12</strong></td>
+                                        <td>Evaluación Final</td>
+                                        <td>Entrega de informe de resultados, métricas y plan de expansión.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-links">
+                <a href="https://www.dataflowia.com" target="_blank">
+                    <i class="fa-solid fa-globe"></i>
+                    www.dataflowia.com
+                </a>
+                <div class="footer-divider"></div>
+                <a href="mailto:contacto@dataflowia.com" class="email-link">
+                    <i class="fa-solid fa-envelope"></i>
+                    contacto@dataflowia.com
+                </a>
+            </div>
+            <div class="footer-copy">
+                &copy; 2026 DATAFLOW IA &nbsp;·&nbsp; Todos los derechos reservados
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleCard(id) {
+            const cardWrapper = document.getElementById(id);
+            cardWrapper.classList.toggle('active');
+        }
+
+        // Efecto spotlight en cards
+        document.querySelectorAll('.card-wrapper').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                card.style.setProperty('--mouse-x', x + '%');
+                card.style.setProperty('--mouse-y', y + '%');
+            });
+        });
+    </script>
+</body>
+</html>
